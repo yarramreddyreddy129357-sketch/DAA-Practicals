@@ -1,0 +1,88 @@
+                                                  \\Pratical 02
+#include <iostream>
+#include <vector>
+#include <chrono>
+
+using namespace std;
+using namespace chrono;
+
+// Function for Linear Search
+int performLinearSearch(const vector<int> &numbers, int target)
+{
+    for (int i = 0; i < numbers.size(); i++)
+    {
+        if (numbers[i] == target)
+            return i;
+    }
+    return -1;
+}
+
+// Function for Binary Search
+int performBinarySearch(const vector<int> &numbers, int target)
+{
+    int left = 0;
+    int right = numbers.size() - 1;
+
+    while (left <= right)
+    {
+        int middle = left + (right - left) / 2;
+
+        if (numbers[middle] == target)
+            return middle;
+
+        if (numbers[middle] < target)
+            left = middle + 1;
+        else
+            right = middle - 1;
+    }
+
+    return -1;
+}
+
+int main()
+{
+    const int SIZE = 100000;
+    vector<int> numbers(SIZE);
+
+    // Initialize sorted array
+    for (int i = 0; i < SIZE; i++)
+    {
+        numbers[i] = i + 1;
+    }
+
+    int target;
+    cout << "Enter the number to search: ";
+    cin >> target;
+
+    // Linear Search
+    auto startTime = high_resolution_clock::now();
+    int linearResult = performLinearSearch(numbers, target);
+    auto endTime = high_resolution_clock::now();
+
+    cout << "\n===== Linear Search =====\n";
+    if (linearResult != -1)
+        cout << "Element found at index: " << linearResult << endl;
+    else
+        cout << "Element not found." << endl;
+
+    cout << "Execution Time: "
+         << duration_cast<microseconds>(endTime - startTime).count()
+         << " microseconds\n";
+
+    // Binary Search
+    startTime = high_resolution_clock::now();
+    int binaryResult = performBinarySearch(numbers, target);
+    endTime = high_resolution_clock::now();
+
+    cout << "\n===== Binary Search =====\n";
+    if (binaryResult != -1)
+        cout << "Element found at index: " << binaryResult << endl;
+    else
+        cout << "Element not found." << endl;
+
+    cout << "Execution Time: "
+         << duration_cast<microseconds>(endTime - startTime).count()
+         << " microseconds\n";
+
+    return 0;
+}
