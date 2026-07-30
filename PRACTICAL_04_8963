@@ -1,0 +1,62 @@
+#include <iostream>
+#include <chrono>
+
+using namespace std;
+using namespace std::chrono;
+
+// Iterative factorial
+unsigned long long iterativeFact(int num)
+{
+    unsigned long long fact = 1;
+
+    while (num > 1)
+    {
+        fact *= num;
+        num--;
+    }
+
+    return fact;
+}
+
+// Recursive factorial
+unsigned long long recursiveFact(int num)
+{
+    return (num <= 1) ? 1 : num * recursiveFact(num - 1);
+}
+
+int main()
+{
+    int n;
+
+    cout << "Enter a non-negative integer (e.g., 20): ";
+
+    cin >> n;
+
+    if (cin.fail() || n < 0)
+    {
+        cout << "Invalid input! Please enter a non-negative integer." << endl;
+        return 1;
+    }
+
+    // Measure iterative execution time
+    auto start1 = high_resolution_clock::now();
+    unsigned long long iterativeResult = iterativeFact(n);
+    auto stop1 = high_resolution_clock::now();
+
+    // Measure recursive execution time
+    auto start2 = high_resolution_clock::now();
+    unsigned long long recursiveResult = recursiveFact(n);
+    auto stop2 = high_resolution_clock::now();
+
+    auto iterativeTime = duration_cast<nanoseconds>(stop1 - start1);
+    auto recursiveTime = duration_cast<nanoseconds>(stop2 - start2);
+
+    cout << "\n--- Results for " << n << "! ---" << endl;
+    cout << "Iterative Result : " << iterativeResult << endl;
+    cout << "Iterative Time   : " << iterativeTime.count() << " ns" << endl;
+    cout << "-------------------------------" << endl;
+    cout << "Recursive Result : " << recursiveResult << endl;
+    cout << "Recursive Time   : " << recursiveTime.count() << " ns" << endl;
+
+    return 0;
+}
