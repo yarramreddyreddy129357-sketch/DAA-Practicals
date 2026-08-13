@@ -1,0 +1,126 @@
+#include <iostream>
+#include <vector>
+#include <stack>
+#include <queue>
+#include <chrono>
+
+using namespace std;
+
+class Graph {
+private:
+    int vertices;
+    vector<vector<int>> graph;
+
+public:
+    Graph(int n) : vertices(n), graph(n) {}
+
+    void connect(int a, int b) {
+        graph[a].push_back(b);
+        graph[b].push_back(a);
+    }
+
+    void performDFS(int source) {
+        vector<int> visited(vertices, 0);
+        stack<int> st;
+
+        st.push(source);
+
+        while (!st.empty()) {
+            int current = st.top();
+            st.pop();
+
+            if (visited[current])
+                continue;
+
+            visited[current] = 1;
+            cout << current << " ";
+
+            // Reverse order keeps traversal reasonably similar
+            // to the recursive DFS style.
+            for (int i = graph[current].size() - 1; i >= 0; i--) {
+                int next = graph[current][i];
+
+                if (!visited[next])
+                    st.push(next);
+            }
+        }
+    }
+
+    void performBFS(int source) {
+        vector<int> visited(vertices, 0);
+        queue<int> q;
+
+        visited[source] = 1;
+        q.push(source);
+
+        while (!q.empty()) {
+            int current = q.front();
+            q.pop();
+
+            cout << current << " ";
+
+            for (int next : graph[current]) {
+                if (!visited[next]) {
+                    visited[next] = 1;
+                    q.push(next);
+                }
+            }
+        }
+    }
+};
+
+int main() {
+    int vertices, edges;
+
+    cout << "Enter number of vertices: ";
+    cin >> vertices;
+
+    Graph g(vertices);
+
+    cout << "Enter number of edges: ";
+    cin >> edges;
+
+    cout << "Enter edges (u v):\n";
+
+    for (int i = 0; i < edges; ++i) {
+        int x, y;
+        cin >> x >> y;
+        g.connect(x, y);
+    }
+
+    int source;
+    cout << "Enter starting vertex: ";
+    cin >> source;
+
+    // Measure DFS execution time
+    auto dfsStart = chrono::steady_clock::now();
+
+    cout << "\nDFS Traversal: ";
+    g.performDFS(source);
+
+    auto dfsEnd = chrono::steady_clock::now();
+
+    long long dfsDuration =
+        chrono::duration_cast<chrono::nanoseconds>(
+            dfsEnd - dfsStart
+        ).count();
+
+    // Measure BFS execution time
+    auto bfsStart = chrono::steady_clock::now();
+
+    cout << "\n\nBFS Traversal: ";
+    g.performBFS(source);
+
+    auto bfsEnd = chrono::steady_clock::now();
+
+    long long bfsDuration =
+        chrono::duration_cast<chrono::nanoseconds>(
+            bfsEnd - bfsStart
+        ).count();
+
+    cout << "\n\nExecution Time:";
+    cout << "\nDFS: " << dfsDuration << " ns";
+    cout << "\nBFS: " << bfsDuration << " ns";
+
+    return 0;
+}
