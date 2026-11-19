@@ -1,0 +1,65 @@
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+using namespace std;
+
+int main() {
+
+    int n = 4;
+
+    // Distance matrix
+    int graph[4][4] = {
+        {0, 10, 15, 20},
+        {10, 0, 35, 25},
+        {15, 35, 0, 30},
+        {20, 25, 30, 0}
+    };
+
+    vector<int> cities;
+
+    // Store cities except starting city (0)
+    for (int i = 1; i < n; i++) {
+        cities.push_back(i);
+    }
+
+    int minCost = INT_MAX;
+    vector<int> bestPath;
+
+    // Generate all possible paths
+    do {
+        int currentCost = 0;
+        int currentCity = 0;
+
+        // Calculate travelling cost
+        for (int city : cities) {
+            currentCost += graph[currentCity][city];
+            currentCity = city;
+        }
+
+        // Return to starting city
+        currentCost += graph[currentCity][0];
+
+        // Find minimum cost
+        if (currentCost < minCost) {
+            minCost = currentCost;
+
+            bestPath = cities;
+        }
+
+    } while (next_permutation(cities.begin(), cities.end()));
+
+    // Display result
+    cout << "Minimum Cost: " << minCost << endl;
+
+    cout << "Optimal Path: 0 ";
+
+    for (int city : bestPath) {
+        cout << "-> " << city << " ";
+    }
+
+    cout << "-> 0" << endl;
+
+    return 0;
+}
